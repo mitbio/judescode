@@ -1,0 +1,47 @@
+We are executing a major full-stack upgrade to the Contxt OS workspace dashboard. We need to integrate an LLM dorking assistant, optimize our search engine with scaling and pagination capabilities, and hook up our real-time Google Trends framework.
+
+Please refactor our React/Vite architecture to implement these three core updates seamlessly:
+
+===================================================================
+1. THE GEMMA AI DORKING ENGINE & CHAIN-OF-THOUGHT STRIPPING
+===================================================================
+- Inside Tab 2 [ WEBSITE CONSISTENCY ], when Jude types a plain-text prompt (e.g., "minimalist design agencies in Toronto") into the main search bar, route that input string to our connected Gemma model (Gemma 4 / 26B configuration).
+- System Prompt for Gemma: "You are a professional open-source intelligence engineer. Convert the user's natural language business request into a single, high-efficiency Google Dork query string using syntax like site:, inurl:, and exact phrase filtering. Return your final answer strictly inside a valid JSON object format: { "dork": "your_compiled_dork_here" }. Do not add conversational filler outside the JSON structure."
+- DEFENSIVE PARSING LOGIC: Modern reasoning LLMs often output a hidden text chain-of-thought block (such as a <think></think> tag or reasoning metadata objects) before the final payload. Implement a robust parsing wrapper using a Regular Expression block to isolate the valid JSON boundaries:
+  
+  const rawText = llmResponse.data;
+  const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    const cleanJSON = JSON.parse(jsonMatch[0]);
+    const finalDorkQuery = cleanJSON.dork;
+    // Pass finalDorkQuery straight into the next step (Serper Search)
+  }
+
+===================================================================
+2. SERPER.DEV MAX-SCALING & "NEXT PAGE" PAGINATION
+===================================================================
+- When executing the search request to the Serper.dev API endpoint, scale up the data capture profile by passing a higher volume parameter: set 'num': 20 (to grab 20 highly-targeted corporate results at a time).
+- PAGINATION ARCHITECTURE: Add a clean, minimalist "Load Next Page" button right beneath our Website Consistency data table layout. 
+- Implement a state variable tracker for the current search page index (`currentPage`, starting at 1). 
+- When Jude clicks "Load Next Page":
+  * Increment the `currentPage` state index by 1.
+  * Execute a new search call to Serper.dev passing both parameters: { q: finalDorkQuery, num: 20, page: currentPage }.
+  * Append the incoming newly discovered URLs directly to the bottom of the current workspace table array—safely guaranteeing zero entry duplicates are created.
+  * Automatically loop through ONLY the newly appended URLs and pass them sequentially to our local Chrome Extension ID (neeobhkgjehajkfmepfngmbloalphcld) using our established EXT_SCRAPE messaging script loop.
+
+===================================================================
+3. GOOGLE TRENDS LIVE SIDEBAR MIGRATION
+===================================================================
+- Wire up the "Live Market Trends" or Google Trends dashboard component to consume real data over the wire.
+- Completely bypass direct SerpApi configurations by routing a standard client-side GET request directly to our secure Google Apps Script web executable deployment endpoint:
+  URL: https://script.google.com/macros/s/AKfycbxqEu1c2nwEufzqqeTj63MTv2es7f7AekcYmgq4amQySSFDZctUEbkBqETevNS-yOqgjg/exec
+- Upon a successful response return, map the clean cached JSON array elements directly to the UI scrolling dashboard layout. Each data element should gracefully map:
+  * Title -> trend.title
+  * Subtext / Volume indicator -> trend.snippet
+- Ensure a smooth loading animation skeleton is rendered in the card space while the Apps Script clears its cache check.
+
+===================================================================
+ROBUST ERROR HANDLING & LOGISTICS
+===================================================================
+- If the Gemma model fails, throws a text string error, or times out, write a fast fallback that strips the user's input of special characters and executes it as a standard raw string search so the app experience never freezes.
+- Keep our high-end SaaS dark mode visual design token system entirely intact. Maintain our micro-loading indicator signals on each data card during background extension scraping phases.

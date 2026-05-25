@@ -1,0 +1,47 @@
+Role: Lead Next.js/Vite Full-Stack Architect.
+
+Task: We are adding a new "Outbound Pulse" tab to the existing dashboard. DO NOT delete or overwrite any existing features, tabs, or components. This is a strictly additive feature. We are building a proactive lead discovery engine.
+
+1. Environment Setup:
+Please pause and ask me to add my GEMINI_API_KEY2 (we will use the cheapest/fastest gemini-2.0-flash model for query translation) and my SERPER_API_KEY2 to the Replit Secrets manager before proceeding with the backend code.
+
+2. Backend Route 1: The Dork Translator & Scraper (/api/outbound/discover)
+
+    Create an API route that accepts a natural language query (e.g., "Luxury real estate brokers in Miami").
+
+    Step A: Call Gemini 2.0 Flash with this system prompt: "You are a search query translator. Convert the user's natural language into a highly optimized Google Dork to find Instagram profiles. Only return the raw dork string. Format: site:instagram.com "keyword1" "keyword2" "location""
+
+    Step B: Take the returned Dork string and immediately pass it to the Serper.dev Search API.
+
+    Step C: Parse the Serper organic results to extract the Instagram handles/URLs. Format the URL into a clean @handle string. Implement logic to filter out duplicate handles so the array is clean. Return this clean array to the frontend.
+
+3. Backend Route 2: The Apify/Vision Mock (/api/outbound/analyze)
+
+    Create a route that accepts an array of selected handles (batch processing).
+
+    Since the actual Apify/Python scraping will be handled by a separate server later, mock the response for now.
+
+    CRITICAL: The mock data MUST sound like an elite, high-end Chicago creative agency wrote it.
+
+    For each handle requested, return a JSON object containing: mockFollowers, mockAvgLikes, postFrequency, an aestheticAudit (a brutal, agency-grade paragraph grading their typography/color/grid inconsistencies), and a pitchAngle (a highly personalized, 2-sentence outbound strategy).
+
+4. Frontend UI: The "Outbound Pulse" Component
+
+    Create a new main view/tab called OutboundPulse.tsx and add a way to navigate to it in the top nav or sidebar alongside the existing Radar view.
+
+    Top Section: A sleek search bar ("e.g., Minimalist furniture in Chicago") with a "Discover Leads" button.
+
+    Loading State: You MUST include a premium loading UI (pulsing skeletons or a sleek spinner) while Routes 1 and 2 are fetching.
+
+    Main Table/List: Display the scraped leads returned from Route 1.
+
+    Batch Selection: Add checkboxes next to each lead so the user can select multiple targets at once.
+
+    Batch Action: Add a prominent "Run Deep Aesthetic Audit" button that only becomes active when at least 1 lead is checked. Clicking this calls Route 2.
+
+    Progressive Disclosure: Once Route 2 returns the mock data, do not clutter the main table. Instead, make the lead row clickable. When clicked, slide out a side-panel (or expand a sleek accordion card) that reveals the specific metrics, the Aesthetic Audit, and the Pitch Angle.
+
+5. Design System:
+Match the existing ultra-premium "Contxt OS" aesthetic perfectly. Use dark/light mode compatibility, floating minimalist cards, soft drop shadows, and high-contrast typography.
+
+Execute this step-by-step. Start by setting up the UI structure and ask me for the API keys.

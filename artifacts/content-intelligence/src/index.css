@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ── Color tokens ─────────────────────────────────────────── */
+:root {
+  --bg:            #F5F5F3;
+  --surface:       #FFFFFF;
+  --surface-2:     #FAFAFA;
+  --surface-hover: #F7F7F5;
+  --border:        #EBEBEB;
+  --border-strong: #D6D6D6;
+  --text-primary:  #111111;
+  --text-secondary:#555555;
+  --text-muted:    #AAAAAA;
+  --accent:        #111111;
+  --accent-fg:     #FFFFFF;
+  --green:         #16A34A;
+  --green-bg:      #F0FDF4;
+  --red:           #DC2626;
+
+  /* Card shadow — airy, floating */
+  --shadow-sm:   0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.05), 0 6px 24px rgba(0,0,0,0.06);
+  --shadow-lift: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+  --shadow-cmd:  0 2px 8px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.10);
+  --radius-card: 20px;
+  --radius-xl:   24px;
+}
+
+.dark {
+  --bg:            #080808;
+  --surface:       rgba(255,255,255,0.05);
+  --surface-2:     rgba(255,255,255,0.03);
+  --surface-hover: rgba(255,255,255,0.08);
+  --border:        rgba(255,255,255,0.09);
+  --border-strong: rgba(255,255,255,0.16);
+  --text-primary:  #FFFFFF;
+  --text-secondary:#9A9A9A;
+  --text-muted:    #555555;
+  --accent:        #00F0FF;
+  --accent-fg:     #080808;
+  --green:         #22C55E;
+  --green-bg:      rgba(34,197,94,0.08);
+  --shadow-card:   0 1px 2px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+  --shadow-lift:   0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+  --shadow-cmd:    0 0 0 1px rgba(255,255,255,0.10), 0 16px 48px rgba(0,0,0,0.6);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  transition: box-shadow 0.25s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .card {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.card-xl { border-radius: var(--radius-xl); }
+
+.card-lift:hover { box-shadow: var(--shadow-lift); }
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }
+
+@keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.35s ease both; }
+
+/* ── Accent button ────────────────────────────────────────── */
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.btn-accent:hover  { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.18); }
+.btn-accent:active { transform: translateY(0); opacity: 1; }
+.btn-accent:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.dark .btn-accent { box-shadow: 0 0 24px rgba(0,240,255,0.22); }
+.dark .btn-accent:hover { box-shadow: 0 0 36px rgba(0,240,255,0.38); }
+
+/* ── Ghost button ─────────────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.78rem;
+  padding: 0.38rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.btn-ghost:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* ── Icon button ──────────────────────────────────────────── */
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.icon-btn:hover { background: var(--surface-hover); color: var(--text-primary); border-color: var(--border-strong); }
+
+/* ── Tag ──────────────────────────────────────────────────── */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 5px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface-2);
+}
+
+/* ── Command bar ──────────────────────────────────────────── */
+.cmd-bar {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-cmd);
+  border-radius: 14px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 6px 6px 6px 18px;
+  transition: all 0.25s ease;
+}
+.dark .cmd-bar { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+
+/* ── Top nav ──────────────────────────────────────────────── */
+.top-nav {
+  background: rgba(245, 245, 243, 0.88);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.dark .top-nav { background: rgba(8,8,8,0.88); }
+
+/* ── Metric ───────────────────────────────────────────────── */
+.metric-green { color: var(--green); font-weight: 700; font-variant-numeric: tabular-nums; }
+.metric-red   { color: var(--red);   font-weight: 700; }
+
+/* ── Live dot ─────────────────────────────────────────────── */
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+/* ── Divider ──────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); width: 100%; }
+
+/* ── Toast ────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 999;
+  background: var(--text-primary); color: var(--bg);
+  padding: 10px 20px; border-radius: 10px;
+  font-size: 0.82rem; font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+/* ── Inspiration image ────────────────────────────────────── */
+.insp-img {
+  width: 100%; object-fit: cover;
+  border-radius: 12px; display: block;
+  transition: transform 0.35s ease;
+}
+.insp-img:hover { transform: scale(1.025); }
+
+/* ── Vector card expand ───────────────────────────────────── */
+.vector-body {
+  overflow: hidden;
+}

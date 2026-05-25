@@ -1,0 +1,31 @@
+The Hugging Face Puppeteer scraping node is live and active at: 
+https://makkiz-contactx-jude.hf.space/scrape
+
+Now, wire up the real data pipeline for Tab 2 [ WEBSITE CONSISTENCY ] by refactoring our backend controller to execute this sequence:
+
+1. THE SERPER DISCOVERY
+- When Jude inputs a Google Dork string and hits search, send that query to the Serper.dev search endpoint to retrieve the top 3-5 organic result URLs.
+
+2. THE HUGGING FACE ROUTING
+- Loop through those retrieved URLs and send a POST request for each domain to our Hugging Face node: https://makkiz-contactx-jude.hf.space/scrape 
+- Payload structure: { "url": "target-domain.com" }
+
+3. METRIC MAPPING & PAYLOAD UNPACKING
+Capture the new nested JSON object returned from Hugging Face and extract:
+- Domain Age: Found at `metadata.domainAge`
+- Lead Info: Emails found at `metadata.leads.emails` (array) and Instagram handle at `metadata.leads.instagram` (string/null).
+- Font & Color Calculations: The `auditTimeline` is an array of pages scanned. 
+  * Calculate 'Homepage Font Count' and 'Homepage Color Count' using the first item in the array (`auditTimeline[0]`).
+  * Calculate the total unique fonts/colors discovered across ALL pages in the timeline to evaluate cross-page variance.
+  * Determine the 'Status Flag' based on the homepage counts (e.g., if colors > 8 or fonts > 3, status is 'CRITICAL MESS', otherwise 'Clean').
+  * Generate a basic consistency percentage comparison (e.g., if page 2 and page 3 introduce more than 2 new unapproved fonts or colors not on the homepage, drop the consistency rating down from 100%).
+
+4. FRONTEND STATE UPDATE
+- Update our Frontend Dashboard domain cards to map this new rich dataset. 
+- The cards should dynamically display:
+  * The Domain Name & Domain Age Badge (e.g., Est. 2014 // 12 Years Old).
+  * Direct actionable links/text for scraped emails and the Instagram profile if present.
+  * The visual health status flag and consistency percentage.
+  * The specific number of fonts and colors found on the site.
+
+Ensure robust error handling so that if one target website fails to load, times out, or has domain privacy blocking it, the script catches it, flags that specific card component as "Scan Failed," and continues processing the rest of the list seamlessly.

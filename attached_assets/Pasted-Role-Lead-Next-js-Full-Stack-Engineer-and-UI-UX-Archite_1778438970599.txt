@@ -1,0 +1,56 @@
+Role: Lead Next.js Full-Stack Engineer and UI/UX Architect.
+
+Task: We are finalizing the "Contxt OS" MVP. It is a 3-column Next.js application. Wire up the frontend state, the backend API routes, and the environment variables.
+
+1. Environment Setup (Crucial):
+Configure the project to use .env secrets. You must explicitly prompt the user to add the following keys to their Replit Secrets:
+
+    SERPER_API_KEY
+
+    GEMINI_API_KEY
+
+    APPS_SCRIPT_URL (The URL for our daily trends cache).
+
+2. Left Column: The Live Radar (Trends):
+
+    Create a function to fetch trends from process.env.APPS_SCRIPT_URL.
+
+    Fallback: If the URL is missing or fails, provide a fallback mock array of 10 trends (each with a title and a short snippet).
+
+    Display these 10 trends in the left panel. The column must have a fixed height with an internal vertical scroll (overflow-y-auto).
+
+3. Right Column: The Vision Engine (Are.na Images):
+
+    Create an API route: /app/api/vision/route.ts.
+
+    It accepts a niche string via POST.
+
+    Make a POST request to https://google.serper.dev/images with the header X-API-KEY: process.env.SERPER_API_KEY.
+
+    The query payload must be: { "q": "${niche} site:are.na" }
+
+    Return a clean array of imageUrl strings.
+
+    Display these in a masonry grid on the right panel. The panel must be internally scrollable. Implement lazy loading for the images.
+
+4. Middle Column: The Intelligence Engine (Gemini AI):
+
+    Create an API route: /app/api/generate/route.ts.
+
+    It accepts a niche string AND an array of trends (pass the top 5 trends from the left column).
+
+    Call the Google Gemini API (using GEMINI_API_KEY).
+
+    System Prompt: "You are an elite Creative Director. The target niche is '{niche}'. Here is the live market context: {trends_data}. Synthesize exactly 3 contrarian, high-end content marketing angles based on these trends. You MUST return pure JSON matching this schema: [{ "id": "01", "tag": "TAG", "hook": "Bold 1-sentence hook", "narrative": "3-sentence strategic explanation", "visualDirection": "2-sentence aesthetic guide" }]"
+
+    Return the parsed JSON to the frontend.
+
+5. UI Interactivity & Polish:
+
+    When the user types a niche and clicks "Run Intelligence", show a sleek loading state (skeletons or spinners) in the Middle and Right columns while the APIs fetch.
+
+    Progressive Disclosure: Render the 3 AI-generated cards in the middle column. By default, they must ONLY show the id, tag, and hook. Provide a chevron icon to expand the card and reveal the narrative and visualDirection.
+
+    Maintain the ultra-premium, minimalist Light Mode aesthetic (white floating cards, soft drop shadows, rounded-3xl corners).
+
+Execute this build step-by-step. Let me know when the .env setup is ready for my keys.

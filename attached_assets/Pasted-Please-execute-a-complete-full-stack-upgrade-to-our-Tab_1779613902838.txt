@@ -1,0 +1,35 @@
+Please execute a complete full-stack upgrade to our Tab 2 [ WEBSITE CONSISTENCY ] workspace interface and backend router logic. We are integrating automated sales generation, real-time visual screenshots, and local pipeline CRM features.
+
+Please implement these technical specifications step-by-step:
+
+===================================================================
+1. BACKEND ROUTE: GEMMA 4 ONE-CLICK PITCH ENGINE
+===================================================================
+- Create a new POST endpoint in our server file at `/api/generate-pitch`.
+- This route must use our configured GEMINI_API_KEY_2 to call our live Gemma 4 model (gemma-4-26b-a4b-it).
+- The payload sent from the frontend will contain: { domain, fontCount, colorCount, emails, healthScore }.
+- System instructions for Gemma: "You are an elite B2B sales copywriter for Contact-X, an automation and design optimization agency. Write a highly compelling, punchy cold pitch email under 150 words addressed to the website owner. Use the specific design errors discovered in the audit metrics (e.g., their health score out of 100, font variances, or layout consistency drifts) as the data-driven hook. Offer a quick, free visual solution mockup layout. Return the final draft strictly inside a clean JSON schema: { "subject": "Subject line text", "body": "Email content text" }. Avoid any prefix commentary or reasoning text blocks."
+- Handle the chain-of-thought parsing on the response text cleanly using a JSON regular expression match wrapper before serving the clean payload back to the frontend UI call.
+
+===================================================================
+2. FRONTEND UPGRADES: VISUAL PROOF & PROGRESSIVE GRADING
+===================================================================
+- Map the incoming extension data metrics from our updated background process array:
+  * Extract the `response.data.screenshot` Base64 string and render it at the top of each layout result card as a slick, styled thumbnail visual frame wrapper (`<img src={card.screenshot} className="w-full h-32 object-cover rounded-md mb-3" />`). If it is null or loading, show a clean, placeholder skeletal shadow block.
+  * Map the calculated `response.data.healthScore` (numerical value out of 100) directly to our responsive progress bar and tier grading badges.
+
+===================================================================
+3. IMPLEMENT THE "ONE-CLICK PITCH" ACTIONS MAPPING
+===================================================================
+- Add a beautiful, primary action button inside each result card layout labeled: `[ ⚡ Generate AI Pitch ]`.
+- Clicking this button must switch that card's sub-panel into an active loading state wrapper and fire an Axios POST request to our new `/api/generate-pitch` endpoint, passing the card's specific scraped data metrics.
+- When the server returns the compiled JSON payload, display the Subject and Body fields inside a clean, editable dark-mode text area module directly inside the card framework, complete with a convenient `[ Copy to Clipboard ]` utility action script.
+
+===================================================================
+4. MINI-CRM PIPELINE STATE TRACKING
+===================================================================
+- Introduce a client-side database tracking array saved inside the browser's `localStorage` cache engine (`contactx_pipeline_leads`).
+- On every domain result card, add an interactive dropdown menu selector representing their local sales workflow phase:
+  * Toggles: `[ 🟢 New Discovery ]`, `[ 🟡 Pitch Generated ]`, `[ 🔵 Outreached ]`, `[ 👑 Closed Deal ]`
+- When Jude modifies this dropdown selector status value, dynamically update the targeted object state flag map matching that specific domain string inside the local storage cache array.
+- Ensure that if Jude reloads the dashboard page layout or searches a new Google Dork, cards matching previously saved domains pull up their historical dropdown state tracker cleanly out of local storage rather than resetting back to default profiles.

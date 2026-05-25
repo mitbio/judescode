@@ -1,0 +1,245 @@
+import streamlit as st
+import time
+import random
+
+# ==========================================
+# 1. PAGE CONFIGURATION & MEMORY STATE
+# ==========================================
+st.set_page_config(
+    page_title="Contact-X | OS",
+    page_icon="⬛",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Initialize Session State (The App's Memory)
+if "has_run" not in st.session_state:
+    st.session_state.has_run = False
+if "generated_ideas" not in st.session_state:
+    st.session_state.generated_ideas = []
+if "idea_counter" not in st.session_state:
+    st.session_state.idea_counter = 0
+
+# --- Callbacks ---
+def trigger_run():
+    st.session_state.has_run = True
+    st.session_state.generated_ideas = [] # Reset on new run
+    st.session_state.idea_counter = 0
+    generate_new_batch()
+
+def generate_new_batch():
+    # A mock engine to generate 2 ideas at a time
+    hooks = [
+        "Stop selling the mansion. Start selling the silence.",
+        "The Open Floor Plan is Dead. Here's What Killed It.",
+        "Your clients aren't buying real estate. They are buying a fortress.",
+        "Why 'Boring' Architecture is the new ultimate flex in 2026.",
+        "The highest ROI room in a luxury home isn't the kitchen anymore."
+    ]
+    
+    for _ in range(2):
+        st.session_state.idea_counter += 1
+        new_idea = {
+            "id": f"{st.session_state.idea_counter:02d}",
+            "hook": random.choice(hooks),
+            "angle": "Contrarian breakdown: Most agents focus on amenities. We focus on psychological safety and spatial compartmentalization to drive urgency.",
+            "visual": "Cinematic 35mm shot, high contrast, moody lighting. Minimalist composition."
+        }
+        st.session_state.generated_ideas.append(new_idea)
+
+# Callbacks for demo interactions
+def push_to_notion(idea_id):
+    st.toast(f"✅ Idea {idea_id} successfully synced to Notion Vault.", icon="⚡")
+
+def reroll_hook(idea_id):
+    st.toast(f"🔄 Rerolling hook for Angle {idea_id} via LLM...", icon="🧠")
+
+def generate_visual(idea_id):
+    st.toast(f"🎨 Nano Banana 2 is generating visual concept for Angle {idea_id}...", icon="✨")
+
+
+# ==========================================
+# 2. ULTRA-PREMIUM CSS INJECTION
+# ==========================================
+st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .stApp { background-color: #0A0A0A; color: #E2E8F0; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif !important; }
+        
+        #MainMenu, footer {visibility: hidden;}
+        header {background: transparent !important;}
+        
+        /* PREMIUM SIDEBAR TOGGLE BUTTON */
+        [data-testid="collapsedControl"] {
+            color: #E2E8F0 !important; background: rgba(255, 255, 255, 0.05) !important;
+            border-radius: 8px !important; margin-top: 15px !important; margin-left: 15px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(4px) !important;
+            transition: all 0.3s ease !important;
+        }
+        [data-testid="collapsedControl"]:hover {
+            background: rgba(255, 255, 255, 0.1) !important; border-color: #FFF !important; transform: scale(1.05);
+        }
+
+        section[data-testid="stSidebar"] { background-color: #0D0D0F; border-right: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        div[role="radiogroup"] > label {
+            background: transparent !important; padding: 8px 12px !important; border-radius: 6px !important;
+            transition: all 0.2s ease; cursor: pointer; border-left: 2px solid transparent; margin-bottom: 2px;
+        }
+        div[role="radiogroup"] > label:hover {
+            background: rgba(255,255,255,0.03) !important; border-left: 2px solid #555; transform: translateX(3px);
+        }
+        
+        .trend-item {
+            background: rgba(255, 255, 255, 0.02); border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.03); font-size: 0.8rem; color: #94A3B8;
+            transition: all 0.2s ease; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .trend-item:hover {
+            background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px); color: #FFF; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .trend-item span { color: #1C62B9; font-size: 1.1rem; margin-right: 10px; font-weight: 700; }
+        
+        .stTextInput input {
+            background-color: #121212 !important; color: #F1F1F1 !important; border: 1px solid #303030 !important;
+            border-radius: 40px !important; padding: 14px 24px !important; font-size: 1rem !important;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.5) !important; transition: all 0.2s ease;
+        }
+        .stTextInput input:focus { border-color: #1C62B9 !important; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 0 0 1px #1C62B9 !important; }
+
+        div.stButton > button[kind="primary"] {
+            background-color: #F1F1F1; color: #0F0F0F; border: none; border-radius: 40px; 
+            padding: 0.6rem 1.5rem; font-weight: 600; font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.2s ease; width: 100%;
+        }
+        div.stButton > button[kind="primary"]:hover { background-color: #D9D9D9; }
+
+        div.stButton > button[kind="secondary"] {
+            background-color: transparent !important; color: #A1A1AA !important; border: 1px solid #333 !important;
+            border-radius: 6px !important; padding: 0.5rem 1rem !important; font-size: 0.85rem !important;
+            font-weight: 500 !important; transition: all 0.2s ease !important;
+        }
+        div.stButton > button[kind="secondary"]:hover {
+            border-color: #666 !important; color: #FFF !important; background-color: rgba(255,255,255,0.02) !important;
+        }
+
+        /* THE GENERATE MORE BUTTON (TERTIARY STYLE) */
+        button[key="generate_more"] {
+            border: 1px dashed #444 !important; color: #888 !important; border-radius: 8px !important;
+            padding: 1rem !important; font-family: 'Space Grotesk', sans-serif !important;
+            text-transform: uppercase !important; letter-spacing: 2px !important; background: transparent !important;
+        }
+        button[key="generate_more"]:hover {
+            border: 1px solid #FFF !important; color: #FFF !important; background: rgba(255,255,255,0.05) !important;
+        }
+
+        div[data-testid="stExpander"] { background: #141414 !important; border: 1px solid #262626 !important; border-radius: 8px !important; margin-bottom: 16px !important; }
+        div[data-testid="stExpander"] summary { font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 600; color: #F1F1F1; padding: 10px 0; }
+        
+        .right-panel-box {
+            border: 1px dashed rgba(255,255,255,0.1); background: rgba(255,255,255,0.01); border-radius: 12px;
+            padding: 20px; text-align: center; color: #555; font-size: 0.85rem; height: 400px; display: flex; align-items: center; justify-content: center;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ==========================================
+# 3. LEFT PANEL (SIDEBAR)
+# ==========================================
+with st.sidebar:
+    if st.session_state.has_run:
+        st.markdown("<h2 style='color: #FFF; font-size: 1.5rem; margin-bottom: 30px;'>The Content Brain.</h2>", unsafe_allow_html=True)
+    else:
+        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='color: #555; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 10px;'>MODULES</div>", unsafe_allow_html=True)
+    os_module = st.radio("MODULE", ["The Content Brain", "Pitch Deck Engine (Beta)", "Vision Check (Locked)"], label_visibility="collapsed")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='color: #555; font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 10px;'>LIVE GOOGLE TRENDS</div>", unsafe_allow_html=True)
+    
+    mock_trends = [
+        "Quiet Luxury aesthetic", "Brutalism in web design", "AI creative directors", 
+        "Framer vs Webflow 2026", "Zero-click searches", "Organic social decline",
+        "Micro-SaaS marketing", "B2B influencer strategies"
+    ]
+    for trend in mock_trends:
+        st.markdown(f"<div class='trend-item'><span>↗</span> {trend}</div>", unsafe_allow_html=True)
+
+# ==========================================
+# 4. MAIN LAYOUT
+# ==========================================
+empty_left, center_stage, empty_mid, right_panel = st.columns([0.2, 3, 0.2, 1])
+
+with center_stage:
+    if not st.session_state.has_run:
+        st.markdown("<br><br><br>", unsafe_allow_html=True)
+        st.markdown("<h1 style='color: #FFF; font-size: 4rem; letter-spacing: -1.5px;'>The Content Brain.</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #888; font-size: 1.1rem; margin-top: -15px; margin-bottom: 30px;'>Data-backed creative ideation powered by real-time market vectors.</p>", unsafe_allow_html=True)
+    else:
+        st.markdown("<br>", unsafe_allow_html=True)
+
+    col_input, col_btn = st.columns([4, 1.2])
+    with col_input:
+        client_niche = st.text_input("Niche", value="Luxury Real Estate", label_visibility="collapsed")
+    with col_btn:
+        st.button("RUN INTELLIGENCE", type="primary", on_click=trigger_run, use_container_width=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ==========================================
+    # 5. THE STATEFUL OUTPUT LOOP
+    # ==========================================
+    if st.session_state.has_run:
+        # Only show the spinner if we just hit "Run", not when we reroll or interact
+        if len(st.session_state.generated_ideas) == 2: 
+            with st.spinner("Synthesizing vectors..."):
+                time.sleep(1.5)
+
+        st.markdown(f"<p style='color: #555; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;'>EXTRACTED VECTORS FOR: {client_niche}</p>", unsafe_allow_html=True)
+
+        # Iterate over the memory state, not a static list
+        for idea in st.session_state.generated_ideas:
+            with st.expander(f"ANGLE {idea['id']} — {idea['hook']}", expanded=True):
+                st.markdown(f"""
+                    <div style="margin-bottom: 12px; margin-top: 10px;">
+                        <span style="font-size: 0.7rem; font-weight: 600; color: #555; letter-spacing: 1px;">THE NARRATIVE</span><br>
+                        <span style="color: #D1D5DB; line-height: 1.6;">{idea['angle']}</span>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <span style="font-size: 0.7rem; font-weight: 600; color: #555; letter-spacing: 1px;">VISUAL DIRECTION</span><br>
+                        <span style="color: #D1D5DB; font-family: 'Space Grotesk', sans-serif;">{idea['visual']}</span>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                # Interactive Secondary Buttons
+                btn_col1, btn_col2, btn_col3, _ = st.columns([1.2, 1.2, 1.2, 2])
+                with btn_col1:
+                    st.button("+ Push to Notion", key=f"notion_{idea['id']}", type="secondary", on_click=push_to_notion, args=(idea['id'],), use_container_width=True)
+                with btn_col2:
+                    st.button("🎨 Generate Visual", key=f"img_{idea['id']}", type="secondary", on_click=generate_visual, args=(idea['id'],), use_container_width=True)
+                with btn_col3:
+                    st.button("🔄 Reroll Hook", key=f"hook_{idea['id']}", type="secondary", on_click=reroll_hook, args=(idea['id'],), use_container_width=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # THE NEW INFINITE LOOP BUTTON
+        st.button("⬇ Generate More Vectors", key="generate_more", on_click=generate_new_batch, use_container_width=True)
+
+# ==========================================
+# 6. RIGHT PANEL 
+# ==========================================
+with right_panel:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("""
+        <div class="right-panel-box">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1rem; color: #666;">
+                Vision Check Engine
+            </span><br>
+            <span style="font-size: 0.75rem; color: #444; margin-top: 10px; display: block;">
+                (Awaiting Image Vectors)
+            </span>
+        </div>
+    """, unsafe_allow_html=True)

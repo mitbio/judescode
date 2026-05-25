@@ -1,0 +1,61 @@
+Please execute an optimization upgrade to our Tab 2 [ WEBSITE CONSISTENCY ] data processing engine and UI card design components. We need to implement dynamic brand consistency percentages and fix the broken domain age tracking logic.
+
+Please refactor our codebase to apply these exact updates:
+
+===================================================================
+1. DYNAMIC BRAND CONSISTENCY PERCENTAGE & TIERS
+===================================================================
+- Replace the strict binary status rule (where fonts > 3 or colors > 8 always equals 'CRITICAL MESS') with a weighted percentage calculation function on our frontend:
+  
+  const calculateConsistencyScore = (fontCount, colorCount) => {
+    let score = 100;
+    // Standard professional designs look best with up to 2 fonts and 5 unique colors
+    if (fontCount > 2) score -= (fontCount - 2) * 15;
+    if (colorCount > 5) score -= (colorCount - 5) * 5;
+    return Math.max(10, score); // Floor at 10%
+  };
+
+- Assign the UI status text and badge colors based on this new 4-tier scale:
+  * Score 85% to 100%: "Pristine Brand" (Emerald Green Badge)
+  * Score 65% to 84%: "Minor Variance" (Amber/Yellow Badge)
+  * Score 45% to 64%: "Fragmented Layout" (Orange Badge)
+  * Score Below 45%: "CRITICAL MESS" (Crimson Red Badge)
+
+- CARD UI UPGRADE: Inside each domain result card, replace the static 100% text display with a sleek, minimalist horizontal progress bar indicator matching the tier color, filling up proportionally to the custom calculated percentage score.
+
+===================================================================
+2. SERVER-SIDE RESILIENT DOMAIN AGE ENGINE (WHOIS/RDAP FIX)
+===================================================================
+- Move the Domain Age calculation logic completely out of the local Chrome Extension background thread and integrate it directly into our secure Replit Node/Express backend search route handler.
+- When Serper.dev delivers the target business domains, have our backend execute an asynchronous Axios fetch to the RDAP network registry. Implement this defensive multi-path JSON crawler to handle different TLD structural variations cleanly:
+
+  async function calculateResilientDomainAge(domain) {
+    try {
+      const cleanDomain = domain.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+      const response = await axios.get(`https://rdap.org/domain/${cleanDomain}`, { timeout: 3500 });
+      const events = response.data.events || [];
+      
+      // Multi-path target matching to catch .com, .net, .org, and modern niche extensions
+      const targetEvent = events.find(e => 
+        ['registration', 'creation', 'active', 'last change'].includes(e.eventAction?.toLowerCase())
+      );
+      
+      if (targetEvent && targetEvent.eventDate) {
+        const creationYear = new Date(targetEvent.eventDate).getFullYear();
+        const currentYear = 2026; // Sync with platform operational calendar year
+        const age = currentYear - creationYear;
+        return age === 0 ? "New Brand (<1 yr)" : `${age} yrs old (Est. ${creationYear})`;
+      }
+      return "Established Brand";
+    } catch (err) {
+      return "Active Domain"; // Clean, non-crashing fallback UI metric
+    }
+  }
+
+- Append this `domainAge` string to the metadata payload object returned to the frontend map, ensuring the UI card domain badges display genuine lifetimes instead of "Unknown / Private".
+
+===================================================================
+3. FRONTEND CORRELATION UPDATES
+===================================================================
+- Ensure that when the frontend receives the domain list from our Serper backend controller, it preserves the pre-calculated server-side `domainAge` metrics.
+- Pass the target URLs sequentially down to the Chrome Extension purely for local element processing (fonts list, colors list, emails, and social handles). Combine both data layers cleanly into our table row cards.
