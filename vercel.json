@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "outputDirectory": "dist",
+  "installCommand": "npm install -g pnpm && pnpm install",
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/static-build"
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     },
     {
       "src": "server/**/*.ts",
